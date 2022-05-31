@@ -1,6 +1,14 @@
 import dotenv from 'dotenv'
 import * as irc from 'irc'
+import { appendFile } from 'fs'
+import moment from 'moment'
 dotenv.config()
+
+const log = (...args) => {
+  const timestamp = moment().format('MM/DD/YYYY HH:mm:ss')
+  appendFile('bot.log', `[${timestamp}] ` + args.map((arg) => JSON.stringify(arg, null, 2)).join('\t'), () => 0)
+  console.log(`[${timestamp}]`, ...args)
+}
 
 const bot = new irc.Client('irc.ppy.sh', process.env.IRC_USERNAME, {
   channels: [],
@@ -10,9 +18,6 @@ const bot = new irc.Client('irc.ppy.sh', process.env.IRC_USERNAME, {
 })
 
 bot.addListener('message', function (from, to, text, message) {
-  console.log('from', from)
-  console.log('to', to)
-  console.log('text', text)
-  console.log('message', message)
-  bot.say(from, 'hello! ' + text)
+  log({ from, to, text, message })
+  bot.say(from, message)
 })
