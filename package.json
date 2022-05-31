@@ -1,0 +1,30 @@
+{
+  "name": "osu-collector-irc-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FunOrange/osu-collector-irc-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FunOrange/osu-collector-irc-bot/issues"
+  },
+  "homepage": "https://github.com/FunOrange/osu-collector-irc-bot#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.37",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
