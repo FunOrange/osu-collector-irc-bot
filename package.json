@@ -19,12 +19,14 @@
   },
   "homepage": "https://github.com/FunOrange/osu-collector-irc-bot#readme",
   "devDependencies": {
+    "@types/irc": "^0.5.1",
     "@types/node": "^17.0.37",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "eslint": "^8.16.0"
   },
   "dependencies": {
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "irc": "^0.5.2"
   }
 }
