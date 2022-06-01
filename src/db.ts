@@ -31,3 +31,8 @@ export async function getUserByIrcName(ircName) {
   const queryResult = await db.collection('users').where('ircName', '==', ircName).get()
   return queryResult.empty ? null : queryResult.docs[0]
 }
+
+export async function getCollectionById(id) {
+  const snapshot = await db.collection('collections').doc(id.toString()).get()
+  return snapshot.exists ? snapshot.data() : null
+}

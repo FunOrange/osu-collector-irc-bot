@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^3.12.0",
+    "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "firebase-admin": "^10.2.0",
     "irc": "^0.5.2",
