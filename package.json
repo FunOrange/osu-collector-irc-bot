@@ -26,7 +26,9 @@
     "eslint": "^8.16.0"
   },
   "dependencies": {
+    "@google-cloud/secret-manager": "^3.12.0",
     "dotenv": "^16.0.1",
+    "firebase-admin": "^10.2.0",
     "irc": "^0.5.2",
     "moment": "^2.29.3"
   }
