@@ -1,7 +1,7 @@
 import admin from 'firebase-admin'
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
 
-let db
+let db: FirebaseFirestore.Firestore
 export async function init() {
   // access credentials
   const secretClient = new SecretManagerServiceClient()
@@ -24,12 +24,12 @@ export async function patchUser(userId, data) {
 
 export async function getUserByUsername(username) {
   const queryResult = await db.collection('users').where('osuweb.username', '==', username).get()
-  return queryResult.empty ? null : queryResult.docs[0]
+  return queryResult.empty ? null : queryResult.docs[0].data()
 }
 
 export async function getUserByIrcName(ircName) {
   const queryResult = await db.collection('users').where('ircName', '==', ircName).get()
-  return queryResult.empty ? null : queryResult.docs[0]
+  return queryResult.empty ? null : queryResult.docs[0].data()
 }
 
 export async function getCollectionById(id) {

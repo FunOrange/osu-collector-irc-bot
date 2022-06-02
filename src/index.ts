@@ -4,6 +4,7 @@ import { appendFile } from 'fs'
 import moment from 'moment'
 import { getCollectionById, getUserByIrcName, init as initDb } from './db'
 import axios from 'axios'
+import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
 dotenv.config()
 
 const log = (...args) => {
@@ -24,6 +25,13 @@ const pendingVerificationIrcUsernames: string[] = []
 const main = async () => {
   await initDb()
 
+  // read bot token
+  const secretClient = new SecretManagerServiceClient()
+  const [version] = await secretClient.accessSecretVersion({
+    name: 'projects/886315950958/secrets/np-bot-token/versions/latest',
+  })
+  const token = version.payload.data.toString()
+
   bot.addListener('message', async (from: string, to: string, text: string, message) => {
     log({ from, to, text, message })
 
@@ -37,7 +45,7 @@ const main = async () => {
     }
   })
 
-  bot.addListener('action', async (from: string, to: string, text: string, message) => {
+  const onAction = async (from: string, to: string, text: string, message) => {
     log({ from, to, text, message })
 
     if (to !== process.env.IRC_USERNAME) return
@@ -51,35 +59,30 @@ const main = async () => {
     const collection = await getCollectionById(user?.npCollectionId)
     if (!collection) return
 
-    // TODO: authentication PATCH request as bot
-    // PATCH https://osucollector.com/api/collections/:collectionId (TODO)
-    // frontend: send all beatmapIds and beatmapChecksums
-    // backend: form list of beatmaps to add and beatmaps to remove
-    // backend: remove beatmaps (easy)
-    // backend: add known beatmaps
-    // backend: push unknown beatmaps to collection.unknownChecksums and collection.unknownIds
-    // backend: recompute collection metadata
-    // cloud function: lookup beatmaps using collection.unknownIds (prioritize ids over checksums)
     const beatmaps = collection.beatmapsets.flatMap((beatmapset) => beatmapset.beatmaps)
-    const existingChecksums = beatmaps.map((beatmap) => beatmap.checksum)
+    const existingChecksums = [...beatmaps.map((beatmap) => beatmap.checksum), ...(collection.unknownChecksums ?? [])]
     const newBeatmapId = npMatch[1]
     const body = {
       beatmapChecksums: existingChecksums,
-      beatmapIds: [newBeatmapId],
+      beatmapIds: [...(collection.unknownIds ?? []), newBeatmapId],
     }
     try {
-      await axios.patch(`https://osucollector.com/api/collections/${collection.id}`, body)
+      await axios.put(`http://localhost:8000/api/collections/${collection.id}/beatmaps`, body, {
+        headers: {
+          ['bot-api-key']: token,
+        },
+      })
       bot.say(from, `Beatmap added to ${collection.name}`)
     } catch (error) {
       console.error(error)
       bot.say(from, 'Sorry, an error occurred.')
     }
-  })
+  }
+  bot.addListener('action', onAction)
 }
-main()
 
-// const examplePrivateMessage = {
-//   from: 'Felis_jp',
+// const a = {
+//   from: 'FunOrange',
 //   to: 'FunOrange',
 //   text: 'is listening to [https://osu.ppy.sh/beatmapsets/1690314#/3454225 Wagakki Band - Tengaku]',
 //   message: {
@@ -96,3 +99,4 @@ main()
 //     ],
 //   },
 // }
+main()
