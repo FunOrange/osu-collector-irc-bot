@@ -67,7 +67,7 @@ const main = async () => {
       beatmapIds: [...(collection.unknownIds ?? []), newBeatmapId],
     }
     try {
-      await axios.put(`http://localhost:8000/api/collections/${collection.id}/beatmaps`, body, {
+      await axios.put(`https://osucollector.com/api/collections/${collection.id}/beatmaps`, body, {
         headers: {
           ['bot-api-key']: token,
         },
