@@ -72,7 +72,7 @@ const main = async () => {
           ['bot-api-key']: token,
         },
       })
-      bot.say(from, `Beatmap added to ${collection.name}`)
+      bot.say(from, `Beatmap added to collection: ${collection.name} (link: https://osucollector.com/collections/${collection.id})`)
     } catch (error) {
       console.error(error)
       bot.say(from, 'Sorry, an error occurred.')
