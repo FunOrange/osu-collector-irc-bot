@@ -46,7 +46,7 @@ const main = async () => {
   })
 
   const onAction = async (from: string, to: string, text: string, message) => {
-    log({ from, to, text, message })
+    log(`${from}: ${text}`)
 
     if (to !== process.env.IRC_USERNAME) return
 
@@ -72,10 +72,14 @@ const main = async () => {
           ['bot-api-key']: token,
         },
       })
-      bot.say(from, `Beatmap added to collection: ${collection.name} (link: https://osucollector.com/collections/${collection.id})`)
+      const response = `Beatmap added to collection: ${collection.name} (link: https://osucollector.com/collections/${collection.id})`
+      log(`FunOrange: ${response}`)
+      bot.say(from, response)
     } catch (error) {
-      console.error(error)
-      bot.say(from, 'Sorry, an error occurred.')
+      log(error)
+      const response = 'Sorry, an error occurred.'
+      log(`FunOrange: ${response}`)
+      bot.say(from, response)
     }
   }
   bot.addListener('action', onAction)
